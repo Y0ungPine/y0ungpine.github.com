@@ -1,0 +1,12 @@
+markdown: rdiscount
+permalink: /:title/
+url: http://0ldpine.github.com
+highlighter: pygments
+name: 一棵老松树
+author: 0ldPine
+email: dc.2014.233@gmail.com
+duoshuo: 0ldPine
+hub: 0ldPine
+safe: true
+paginate: 100
+about: "菜鸡！"

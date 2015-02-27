@@ -1,4 +1,11 @@
 markdown: rdiscount
+rdiscount: 
+  extensions:
+    - autolink
+    - footnotes
+    - smart
+    - generate_toc
+  toc_token: "!TOC"
 permalink: /:title/
 url: http://www.oldpine.tk
 highlighter: pygments

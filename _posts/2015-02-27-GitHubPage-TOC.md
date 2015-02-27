@@ -1,8 +1,8 @@
 ---
 layout : post
 title : GitHub Page、jekyll、markdown增加目录
-categories : 混合
-tags : GitHub,Jekyll,Marddown
+categories : 混合	
+tags : GitHub Jekyll Marddown
 ---
 
 修改**_config.yml**文件中的markdown属性为:

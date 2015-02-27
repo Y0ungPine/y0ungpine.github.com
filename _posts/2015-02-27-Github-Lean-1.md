@@ -32,7 +32,7 @@ $ ssh-keygen -t rsa -C "your_email@example.com"
 因为可能需要看指纹识别码，所以要输入密码，这个密码不是GitHub的密码。
 
 ```
-Enter passphrase (empty for no passphrase): [Type a passphrase]
+# Enter passphrase (empty for no passphrase): [Type a passphrase]
 # Enter same passphrase again: [Type passphrase again]
 ```
 接下来输入秘钥的名称，可以自己确定，也可以使用默认的名称。
@@ -49,8 +49,9 @@ Enter passphrase (empty for no passphrase): [Type a passphrase]
 # start the ssh-agent in the background
 $ eval "$(ssh-agent -s)"
 # Agent pid 59566
-$ ssh-add ~/.ssh/id_rsa``
+$ ssh-add ~/.ssh/id_rsa
 ```
+
 3.向自己的用户添加SSH key
 
 拷贝公钥到粘贴版。
@@ -74,14 +75,14 @@ $ ssh -T git@github.com
 得到这样的输入是正确的：
 
 ```
-The authenticity of host 'github.com (207.97.227.239)' can't be established.
+# The authenticity of host 'github.com (207.97.227.239)' can't be established.
 # RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
 # Are you sure you want to continue connecting (yes/no)?`
 ```
 只要输入yes，就能够连接了，如果连接后得到的结果是：
 
 ```
-Hi username! You've successfully authenticated, but GitHub does not
+# Hi username! You've successfully authenticated, but GitHub does not
 # provide shell access.
 ```
 那么连接就成功了，可以在本地连接GitHub了。
@@ -91,7 +92,7 @@ Hi username! You've successfully authenticated, but GitHub does not
 使用
 
 ```
-ssh -T git@github.com
+$ ssh -T git@github.com
 ```
 连接了Github之后，首先创建一个新的项目。
 
@@ -180,4 +181,9 @@ $ git push origin master
 ```
 $ git pull origin master // 先把远程服务器github上面的文件拉下来，再push 上去。
 ```
+
+#参考
+---
+* [Resize](http://resizesafari.com "a Safari extension")
+
 

@@ -17,3 +17,7 @@ hub: 0ldPine
 safe: true
 paginate: 100
 about: "菜鸡！"
+highlighter: pygments
+redcarpet:
+  extensions: [fenced_code_blocks]
+  render_options:

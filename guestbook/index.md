@@ -5,7 +5,7 @@ comments: yes
 thread: 616
 ---
 
-![come on](guest.jpg)
+![come on](guest1.jpg)
 
 
-来了，就留下你的足迹吧～
+来站，ID：发烧头好疼

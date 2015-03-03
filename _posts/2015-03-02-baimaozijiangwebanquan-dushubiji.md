@@ -180,7 +180,7 @@ Discoverability | 漏洞很显眼，攻击条件很容易获得 | 在私有区�
    * 利用时间（Event）来缩短需要的字节数。
    * 利用location.hash来访Payload，然后eval(location.hash)。因为location.hash也是有长度的，所有如果需要的Payload特别上，可以在loaction.hash里放入远程加载代码的Payload。
    * 在一些环境中，可以使用注释来绕过长度限制。
- * 使用<base>标签，它的作用是定义页面上的所有使用相对路径标签的host地址。如一张地址为http://www.google.com/a/b/c/d/e.png的图片用下面的代码使用。<base>标签可以使用在页面的任何地方，并作用于该标签之后的所有标签。如果攻击者控制了这个标签，就可以在远程服务器上控制图片、连接和脚本，所以这是一个非常危险的标签，如果要做安全方案，必须得过滤这个标签。
+ * 使用<base>标签，它的作用是定义页面上的所有使用相对路径标签的host地址。如一张地址为 http://www.google.com/a/b/c/d/e.png 的图片用下面的代码使用。<base>标签可以使用在页面的任何地方，并作用于该标签之后的所有标签。如果攻击者控制了这个标签，就可以在远程服务器上控制图片、连接和脚本，所以这是一个非常危险的标签，如果要做安全方案，必须得过滤这个标签。
  
 ```
 <body>
@@ -188,8 +188,9 @@ Discoverability | 漏洞很显眼，攻击条件很容易获得 | 在私有区�
 <img src="a/b/c/d/e.png">
 </body>
 ```
- * window.name的妙用：对当前窗口的window.name对象赋值，没有特殊字符的限制。因为window对象是浏览器窗体，而不是document对象，并且很多时候window对象不受同源策略的限制。
- * nsheme
+ * window.name的妙用：对当前窗口的window.name对象赋值，没有特殊字符的限制。因为window对象是浏览器窗体，而不是document对象，并且很多时候window对象不受同源策略的限制。如当www.a.com一个页面test.html上修改了window.name的值后，页面跳转到www.b.com站点的一个页面test.html，会发现window.name的值并没有改变。利用这一点，就可以实现跨域攻击。
+
+
  
 
 

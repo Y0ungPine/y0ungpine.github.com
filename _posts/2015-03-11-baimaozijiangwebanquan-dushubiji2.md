@@ -308,18 +308,99 @@ tags : 安全 Web 渗透
    * 直接执行代码的函数，如eval()，assert()，system()，exec()，shell_exec()，passthru()，escapeshellcmd()，pcntl_exec()。一般来说，最好再PHP中禁用这些函数。在审计代码的时候，着重审查是否有这些函数存在，然后溯本根源，看参数是否能够被用户控制。
    * 文件包含，要高度注意的函数include()，include_once()，require()，require_once()。
    * 本地文件写入，常见的函数有file_put_contents()，fwrite()，fputs()等。
-   * preg_replace()代码执行，preg_replace
+   * preg_replace()代码执行，preg_replace第一个参数如果存在`/e`模式修饰符，则允许代码执行。
+   * 代码动态执行，形如这种情况
+   
+      ```
+      <?php
+      $dyn_func = $_GET['dyn_func'];
+      $argument = $_GET['argument'];
+      $dyn_func($argument);
+      ?>
+      ```
+      如果利用这样的链接`http://***.com/test.php?dyn_func=system&argument=uname`那么就会造成代码执行。
+   * Curly Syntax，PHP的一种特性，执行花括号间的代码并返回结果，`${'ls'}`。
+   * 回调函数执行代码，当回调函数可以被用户控制的时候，也会造成代码执行，形如
+   
+      ```
+      <?php
+      $evil_callback = $_GET['callback'];
+      $some_array = array(0,1,2,3);
+      $new_array = array_map($evil_callback,$some_array);
+      ?>
+      ```
+      使用payload为`http://***.com/test.php?callback=phpinfo`就可以造成代码执行。此类的函数有很多，比如usort()，uasort()等等。
+   * unserialize()导致代码执行
+   
+      unserialize()代码执行有两个条件，一个是unserialize()的参数用户可以控制，这样可以构造出需要反序列化的数据结构，二是存在__destruct()函数或者__wakeup()函数，这两个函数决定了实现的逻辑能执行怎么样的代码。一个例子：
+      
+      ```
+      <?php
+      class Example{
+          var $var = '';
+          function __destruct(){
+              eval($this->var);
+          }
+      }
+      unserialize($_GET['saved_code']);
+      ?>
+      ```
+      使用这样的payload，`http://***.com/test.php?save_code=O:7:"Example":1:{s:3:"var";s:10:"phpinfo();";}`。
+   
+4. 定制安全的PHP环境
 
+   保护PHP安全，除了熟悉各种PHP的漏洞外，还可以通过配置php.ini来加固PHP的运行环境，一些推荐的安全相关参数配置。
+   
+   * register_globals：当值为on时，PHP不知道变量从何而来，容易出一些变量覆盖问题，见前文的变量覆盖，所以最好配置为OFF，新版本的PHP默认值为OFF。
+   * open_basedir：指定PHP只能操作指定目录下的文件，可以有效的对抗文件包含，目录遍历等攻击方式，如果设置的值为一个目录，要在最后加上`/`，否则会被认为是一个目录前缀。
+   * allow_url_include：对抗远程文件包含，不是必须要用建议关闭，同时还有allow_url_fopen。
+   * display_errors：错误回显，当应用正式上线后，关闭这个选项，不然会泄露很多服务器信息。  
+   * log_errors：正式环境里用它，将错误记录在错误日志中。
+   * magic_quotes_gpc：已经没有很大意义的选项，本来是用转义字符来对抗注入攻击的，但是绕过它的方法太多了。
+   * cgi.fix_pathinfo：如果PHP以CGI的方式安装，需要关闭此项，以避免出现文件解析漏洞。
+   * session.cookie_httponly：开启HttpOnly，使得JS不能够读取被标记的Cookie，建议开启。
+   * session.cookie_secure：若是全站HTTPS，请开启此项。
+   * safe_mode：PHP的安全模式是否应该开启的争议一直很大。一方面，它会影响很多函数，另一方面，它又不停的被黑客绕过，所以很难取舍。如果是共享环境（如App Engine），建议开启，和disable_functions配合使用，如果是单独的应用环境，可以考虑关闭，主要使用disable_functions来控制运行环境安全。
+   * disable_functions：在PHP中禁用函数，根据不同的环境有不同的制定，需要的时候可以去参考现有的禁用函数列表。
 
 ##第15章 WebServer配置安全
+1. Apache安全
+
+   WebServer的安全我们关注两点：一是WebServer本身是否安全，二时WebServer是否提供了可使用的安全功能。Apache虽然曾经出过很多高危漏洞，但但部分是由于Apache的Module造成的，Apache本身的高危漏洞几乎没有，所以，使用Apache安全的第一件事就是检查Apache的Module的安装情况，根据**最小权限原则**，应该尽可能地减少不必要的Module，对于要使用的Module，则检查其对应版本是否存在已知的安全漏洞。
+   
+   定制好Apache的安装包后，要做的就是使用一个**单独**的用户来运行Apache进程，最好这个用户是没有shell权限的，这样，即使攻击者拿下了Apache对应用户的权限，也没有执行shell的权限。
+   
+   同时，还需要配置一些参数来抵抗DDOS攻击，如TimeOut，KeepAlive等等。
+   
+   最后还要保护好log，一般攻击者拿下权限做的第一件事就是清空log，抹除攻击痕迹，所以log最好能够实备份到远程主机上。
+   
+2. Nginx 安全
+
+   Nginx版本高危漏洞比Apache要多，所以要紧跟版本，即使更新。同样，在对抗DDOS方面，Nginx也有自己能够配置的参数，Nginx配置中还可以做一些条件判断，来验证Http Header的内容，然后进行一些操作，如返回错误号，重定向等等。
+   
+4. jBoss
+
+   默认安装的jBoss范文它的后台JMX-Console是没有任何认证的，可以通过DeploymentScanner远程加载war包，具体的步骤看看书吧，都是图。
+   
+5. Tomcat
+
+   作者也是描述了一个上传war包的问题，但是暴力破解密码好坑好坑。
+   
+6. HTTP Parameter Pollution
+
+   意思是，通过GET或者POST向服务器发起请求时，提交两个相同的参数，服务器会如何响应？如`/?a=test&a=test1`，有些WebServer会取第一个参数，有的会取第二个，还有一些会两个联合起来，比如在.NET韩静中，会变成`a=test,test1`。
+   
+   利用这种特性，有时候就可以绕过一些服务器端的逻辑判断。
+   
+**上面说的都很简单，具体的应用中，不同的Web Server还是得找一些专业的文档来进行安全配置**。
 
 #第四章 互联网公司安全运营
 ---
 ##第16章 互联网业务安全
-
 ##第17章 安全开发流程（SDL）
+##第18章 安全运营     
 
-##第18章 安全运营      
+这里不用记录什么了，核心观念就是一个**不论是在开发，还是运营中，公司的管理者、员工都应该以安全为重，一个优秀的产品，安全是必不可少的**。 
       
 #参考文献
 ---

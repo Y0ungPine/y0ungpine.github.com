@@ -1,9 +1,19 @@
 ---
 layout : post
-title : Linux内核设计的艺术 读书笔记
+title : Linux内核设计的艺术 读书笔记一
 categories : Linux
 tags : Linux-Kernel
 ---
+
+# 系列文章
+1. [Linux内核设计的艺术 读书笔记一](/Linuxneiheshejideyishu1)
+2. [Linux内核设计的艺术 读书笔记二](/Linuxneiheshejideyishu2)
+3. [Linux内核设计的艺术 读书笔记三](/Linuxneiheshejideyishu3)
+4. [Linux内核设计的艺术 读书笔记四](/Linuxneiheshejideyishu4)
+5. [Linux内核设计的艺术 读书笔记五](/Linuxneiheshejideyishu5)
+6. [Linux内核设计的艺术 读书笔记六](/Linuxneiheshejideyishu6)
+7. [Linux内核设计的艺术 读书笔记七](/Linuxneiheshejideyishu7)
+8. [Linux内核设计的艺术 读书笔记八](/Linuxneiheshejideyishu8)
 
 !TOC
 

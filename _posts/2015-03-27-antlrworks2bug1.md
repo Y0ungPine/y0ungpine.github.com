@@ -33,7 +33,14 @@ java.io.IOException: Referenced file does not exist: /Users/yourname/Tools/antlr
 	at java.lang.Thread.run(Thread.java:745)
 ```
 
-**解决的方法是**将缓存文件删掉，目录在这个地方：windows `C:\Users\<YouName>\AppData\Roaming\.antlrworks2` Mac `/Users/<USER>/Library/Application\ Support/antlrworks2`
+**解决的方法是**将缓存文件删掉，目录在这个地方：
+
+```
+windows 
+C:\Users\<YouName>\AppData\Roaming\.antlrworks2 
+Mac 
+/Users/<USER>/Library/Application\ Support/antlrworks2
+```
 
 2.2版本的Antlrworks作为NetBeans的一个插件出现的，没有上面的这个bug。
 
